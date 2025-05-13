@@ -31,3 +31,15 @@ jobs:
           echo "::error file=analyze-report.json::Istio analyze found errors. Check analyze-report.json for details."
           exit 1
         fi
+
+    - name: Run istioctl analyze
+      run: |
+        set -euo pipefail
+        # --use-kube=false를 지정하면 클러스터 없이도 로컬 파일만으로 분석 가능
+        istioctl analyze ./istio-configs --use-kube=false --output json > analyze-report.json || true
+        cat analyze-report.json
+         if grep -q '"Level":"Error"' analyze-report.json; then
+          echo "Istio analyze found errors"
+          echo "::error file=analyze-report.json::Istio analyze found errors. Check analyze-report.json for details."
+          exit 1
+        fi
