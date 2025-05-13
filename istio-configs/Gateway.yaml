@@ -1,5 +1,4 @@
 apiVersion: networking.istio.io/v1
-sdf
 kind: Gateway
 metadata:
   name: bookinfo-gateway
