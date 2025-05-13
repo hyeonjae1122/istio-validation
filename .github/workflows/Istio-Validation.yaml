@@ -30,5 +30,6 @@ jobs:
       run: |
         if grep -q '"Level":"Error"' analyze-report.json; then
           echo "Istio analyze found errors"
+          echo "::error file=analyze-report.json::Istio analyze found errors. Check analyze-report.json for details."
           exit 1
         fi
