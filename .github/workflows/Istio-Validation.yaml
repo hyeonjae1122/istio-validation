@@ -1,0 +1,34 @@
+name: Istio YAML 분석
+
+on:
+  push:
+    paths:
+      - 'istio-configs/**.yaml'
+  pull_request:
+
+jobs:
+  istio-analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install istioctl
+      run: |
+        curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.22.0 sh -
+        export PATH="$PATH:./istio-1.22.0/bin"
+        echo "PATH=$PATH:./istio-1.22.0/bin" >> $GITHUB_ENV
+
+    - name: Run istioctl analyze
+      run: |
+        # --use-kube=false를 지정하면 클러스터 없이도 로컬 파일만으로 분석 가능
+        istioctl analyze ./istio-configs --use-kube=false --output json > analyze-report.json || true
+        cat analyze-report.json
+
+    - name: Fail if issues found
+      run: |
+        if grep -q '"Level":"Error"' analyze-report.json; then
+          echo "Istio analyze found errors"
+          exit 1
+        fi
