@@ -1,6 +1,5 @@
 apiVersion: networking.istio.io/v1
 kind: Gateway
-여기에 형식이 잘못된 부분이 있습니다. 수정해주세요.!
 metadata:
   name: bookinfo-gateway
 spec:
